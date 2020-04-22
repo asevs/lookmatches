@@ -7,11 +7,11 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "skills")
+@Table(name = "skill")
 public class Skill {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "skill_id")
     private int id;
     @Column(name = "skill_name")

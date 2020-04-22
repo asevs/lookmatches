@@ -1,32 +1,27 @@
 package pl.lukaszg.lookmatches.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@ToString
+
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "users")
+@Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private long id;
     @Column(name = "user_active")
-    private int active;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Skill.class)
-    @JoinColumn(name="skill_id")
-    private Skill nrSkill;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Role.class)
-    @JoinColumn(name="role_id")
-    private Role nrRole;
+    private Boolean active;
     @Column(name = "user_goals")
     private int goals;
     @Column(name = "user_assists")
@@ -39,7 +34,7 @@ public class User {
     private String password;
     @Column(name = "user_full_name")
     private String fullName;
-    @Column(name = "user_new_password")
+    @Transient
     private String newPassword;
     @Column(name = "user_photo")
     private String photo;
@@ -49,17 +44,19 @@ public class User {
     private LocalDateTime lastLoginDate;
     @Enumerated(EnumType.STRING)
     private UserLoginType loginType;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private Set<Skill> skills;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
+    @OneToOne
+    @JsonManagedReference(value = "user-team")
+    private Team myTeam;
 
-
-
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-//    private Set<Role> roles;
-//
-//
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "user_skill", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
-//    private Set<Skill> skills;
-
+    @ManyToOne
+    @JsonBackReference(value="users-team")
+    @JoinColumn(name = "team_id")
+    private Team team;
 
 }

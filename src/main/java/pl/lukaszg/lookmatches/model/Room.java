@@ -1,17 +1,19 @@
 package pl.lukaszg.lookmatches.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "rooms")
+@Table(name = "room")
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private long id;
     @Column(name = "room_price")
@@ -20,52 +22,44 @@ public class Room {
     private int scoreTeamFirst;
     @Column(name = "room_score_team_second")
     private int scoreTeamSecond;
-    @Column(name = "room_player_1_team_1_goals")
-    private int player1Team1Goals;
-    @Column(name = "room_room_player_2_team_1_goals")
-    private int player2Team1Goals;
-    @Column(name = "room_room_player_1_team_2_goals")
-    private int player1Team2Goals;
-    @Column(name = "room_room_player_2_team_2_goals")
-    private int player2Team2Goals;
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Skill.class)
-    @JoinColumn(name="level_skill")
+    @JoinColumn(name = "room_level_skill")
     private Skill levelSkill;
     @Column(name = "room_created_date")
     private Date createdDate;
     @Column(name = "room_event_date")
     private Date eventDate;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
-    @JoinColumn(name="owner_user", insertable = false, updatable = false)
+
+    @ManyToOne
+    @JsonBackReference
     private User ownerUser;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
-    @JoinColumn(name="player_1_team_1", insertable = false, updatable = false)
-    private User player1Team1;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
-    @JoinColumn(name="player_2_team_1", insertable = false, updatable = false)
-    private User player2Team1;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
-    @JoinColumn(name="player_1_team_2", insertable = false, updatable = false)
-    private User player1Team2;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
-    @JoinColumn(name="player_2_team_2", insertable = false, updatable = false)
-    private User player2Team2;
+
+    //    private Map <Integer, Integer> assists;
+
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Place.class)
-    @JoinColumn(name="place", insertable = false, updatable = false)
+    @JoinColumn(name = "room_place", insertable = false, updatable = false)
     private Place place;
-    @Column(name = "room_name_team_second")
-    private String nameTeamSecond;
-    @Column(name = "room_name_team_first")
-    private String nameTeamFirst;
+
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Team.class)
+    @JoinColumn(name = "team_second", insertable = false, updatable = false)
+    private Team teamSecond;
+
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Team.class)
+    @JoinColumn(name = "team_first", insertable = false, updatable = false)
+    private Team teamFirst;
+
+    @OneToMany
+    @JoinColumn(name = "team_first_users")
+    private List<User> teamFirstUsers;
+
+    @OneToMany
+    @JoinColumn(name = "team_second_users")
+    private List<User> teamSecondUsers;
 
 
-
-
-
-
-
-
-
+//    @ElementCollection
+//    @MapKeyJoinColumn(name = "user_id")
+//    private Map<User, Integer> goals;
 
 
 }
