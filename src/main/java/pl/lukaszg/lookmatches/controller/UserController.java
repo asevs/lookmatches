@@ -1,6 +1,7 @@
 package pl.lukaszg.lookmatches.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,4 +44,17 @@ public class UserController {
         return userService.login(user);
     }
 
+    @RequestMapping(value = "/addUser/{userId}/team/{teamId}")
+    public String addUserToTeamById(@PathVariable(value = "teamId", required = true) Long teamId, @PathVariable(value = "userId", required = true) Long userId) {
+        if (userId != null && teamId != null) {
+            return userService.addUserToTeamById(teamId, userId);
+        } else return "teamId or userId is null";
+    }
+
+    @RequestMapping(value = "/addUser/{userId}/room/{roomId}/team/{teamId}")
+    public String addUserToRoomById(@PathVariable(value = "roomId", required = true) Long roomId, @PathVariable(value = "userId", required = true) Long userId, @PathVariable(value = "teamId", required = true) Long teamId) {
+        if (userId != null && roomId != null) {
+            return userService.addUserToRoomById(roomId, userId, teamId);
+        } else return "roomId or userId is null";
+    }
 }

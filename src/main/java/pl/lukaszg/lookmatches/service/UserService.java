@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import pl.lukaszg.lookmatches.model.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 
 @Service("userService")
@@ -25,6 +22,8 @@ public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
     BCryptPasswordEncoder bcryptPasswordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    TeamRepository teamRepository;
     @Qualifier("roleRepository")
     @Autowired
     private RoleRepository roleRepository;
@@ -32,6 +31,9 @@ public class UserService {
     private SkillRepository skillRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoomRepository roomRepository;
+
 
     @Bean
     public PrincipalExtractor principalExtractor(UserRepository userRepository) {
@@ -97,7 +99,7 @@ public class UserService {
                     .claim("roles", user.getRoles())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis() + 20000))
-                    .signWith(SignatureAlgorithm.HS512,"aRA1+y%1*V>i/x")
+                    .signWith(SignatureAlgorithm.HS512, "aRA1+y%1*V>i/x")
                     .compact();
         }
         return "Wrong email or password";
@@ -105,9 +107,37 @@ public class UserService {
 
     public Boolean checkUser(User user) {
         User checkerUser = userRepository.findByEmail(user.getEmail());
-
         return bcryptPasswordEncoder.matches(user.getPassword(), checkerUser.getPassword());
 
+    }
 
+    public String addUserToTeamById(Long teamId, Long userId) {
+        Optional<Team> team = teamRepository.findById(teamId);
+        Optional<User> user = userRepository.findById(userId);
+
+        if (team.isPresent() && user.isPresent()) {
+            if (team.get().getSlots() > team.get().getUsers().size()) {
+                user.get().setTeam(team.get());
+                userRepository.save(user.get());
+                return "added user";
+            } else return "max users";
+        } else return "not added user";
+    }
+
+    public String addUserToRoomById(Long roomId, Long userId, Long teamId) {
+        Optional<Room> room = roomRepository.findById(roomId);
+        Optional<User> user = userRepository.findById(userId);
+
+
+        if (room.isPresent() && user.isPresent()) {
+            if (room.get().getSlots() > room.get().getUsers().size()) {
+                List<Room> rooms = user.get().getRooms();
+                rooms.add(room.get());
+                user.get().setRooms(rooms);
+                userRepository.save(user.get());
+                return "added user";
+            } else return "max users";
+
+        } else return "not added user";
     }
 }

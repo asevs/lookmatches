@@ -8,6 +8,7 @@ import pl.lukaszg.lookmatches.model.Team;
 import pl.lukaszg.lookmatches.service.TeamService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping(value = "/api")
 @RestController
@@ -28,6 +29,16 @@ public class TeamController {
     @ResponseStatus(HttpStatus.CREATED)
     public Team addTeam(@RequestBody Team team) {
         return teamService.addTeam(team);
+    }
+
+    @RequestMapping(value = "/team/{id}")
+    public Optional<Team> findById(@PathVariable(value = "id", required = true) int id) {
+        return teamService.getTeamById(id);
+    }
+
+    @RequestMapping(value = "/team/{id}/{name}")
+    public String changeTeamName(@PathVariable(value = "id", required = true) int id, @PathVariable(value = "name", required = true) String name) {
+        return teamService.setTeamName(id, name);
     }
 
 }

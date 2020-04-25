@@ -1,12 +1,12 @@
 package pl.lukaszg.lookmatches.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 
@@ -51,12 +51,15 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
     @OneToOne
-    @JsonManagedReference(value = "user-team")
+    @JsonBackReference(value = "user-team")
     private Team myTeam;
 
     @ManyToOne
-    @JsonBackReference(value="users-team")
-    @JoinColumn(name = "team_id")
+    @JsonBackReference(value = "users-team")
     private Team team;
+
+    @ManyToMany
+    @JsonBackReference(value = "users-rooms")
+    private List<Room> rooms;
 
 }

@@ -17,20 +17,21 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_id")
-    private int id;
+    private Long id;
     @Column(name = "team_name")
     @NotNull
     private String name;
     @OneToOne(mappedBy ="myTeam")
-    @JsonBackReference(value="user-team")
+    @JsonManagedReference(value="user-team")
     private User owner;
     @Column(name = "team_goals")
     private int goals;
     @Column(name = "team_assists")
     private int assists;
+    @Column(name = "team_slots")
+    private int slots;
     @OneToMany(mappedBy ="team")
     @JsonManagedReference(value = "users-team")
-
     private List<User> users;
 
 }

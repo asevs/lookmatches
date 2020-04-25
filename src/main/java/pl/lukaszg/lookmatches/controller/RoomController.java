@@ -8,6 +8,7 @@ import pl.lukaszg.lookmatches.model.Room;
 import pl.lukaszg.lookmatches.service.RoomService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping(value = "/api")
 @RestController
@@ -28,5 +29,17 @@ public class RoomController {
     @ResponseStatus(HttpStatus.CREATED)
     public Room addRoom(@RequestBody Room room) {
         return roomService.addRoom(room);
+    }
+
+    @RequestMapping(value = "/room/{id}")
+    public Optional<Room> findById(@PathVariable(value = "id", required = true) Long id) {
+        return roomService.getTeamById(id);
+    }
+
+
+
+    @RequestMapping(value = "/close/room/{id}")
+    public String closeMatchById(@PathVariable(value = "id", required = true) Long id) {
+        return roomService.closeMatch(id);
     }
 }

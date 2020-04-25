@@ -1,6 +1,8 @@
 package pl.lukaszg.lookmatches.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,6 +18,8 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private long id;
+    @Enumerated(EnumType.STRING)
+    RoomStatus roomStatus;
     @Column(name = "room_price")
     private double price;
     @Column(name = "room_score_team_first")
@@ -29,32 +33,23 @@ public class Room {
     private Date createdDate;
     @Column(name = "room_event_date")
     private Date eventDate;
-
+    @Column(name = "slots")
+    private int slots;
     @ManyToOne
     @JsonBackReference
     private User ownerUser;
-
-    //    private Map <Integer, Integer> assists;
-
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Place.class)
-    @JoinColumn(name = "room_place", insertable = false, updatable = false)
     private Place place;
-
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Team.class)
-    @JoinColumn(name = "team_second", insertable = false, updatable = false)
     private Team teamSecond;
-
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Team.class)
-    @JoinColumn(name = "team_first", insertable = false, updatable = false)
     private Team teamFirst;
 
-    @OneToMany
-    @JoinColumn(name = "team_first_users")
-    private List<User> teamFirstUsers;
+    @ManyToMany(mappedBy = "rooms")
+    @JsonIgnore
+    @JsonManagedReference(value = "users-rooms")
+    private List<User> users;
 
-    @OneToMany
-    @JoinColumn(name = "team_second_users")
-    private List<User> teamSecondUsers;
 
 
 //    @ElementCollection
