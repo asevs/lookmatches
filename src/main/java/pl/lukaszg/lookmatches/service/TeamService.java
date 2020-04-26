@@ -1,6 +1,5 @@
 package pl.lukaszg.lookmatches.service;
 
-import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,5 +50,11 @@ public class TeamService {
         team.setSlots(slots);
         team.setOwner(owner);
         return teamRepository.save(team);
+    }
+
+    public void addRandomizeUsersToTeams(List<User> users, Long teamId) {
+        Optional<Team> team = teamRepository.findById(teamId);
+        team.ifPresent(value -> value.setUsers(users));
+
     }
 }

@@ -124,7 +124,7 @@ public class UserService {
         } else return "not added user";
     }
 
-    public String addUserToRoomById(Long roomId, Long userId, Long teamId) {
+    public String addUserToRoomById(Long roomId, Long userId) {
         Optional<Room> room = roomRepository.findById(roomId);
         Optional<User> user = userRepository.findById(userId);
 

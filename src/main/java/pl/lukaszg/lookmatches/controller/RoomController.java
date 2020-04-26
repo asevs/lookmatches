@@ -36,7 +36,10 @@ public class RoomController {
         return roomService.getTeamById(id);
     }
 
-
+    @RequestMapping(value = "/room/randomizeTeams/{id}")
+    public String randomizeTeams(@PathVariable(value = "id", required = true) Long id) {
+        return roomService.randomizeTeams(id);
+    }
 
     @RequestMapping(value = "/close/room/{id}")
     public String closeMatchById(@PathVariable(value = "id", required = true) Long id) {

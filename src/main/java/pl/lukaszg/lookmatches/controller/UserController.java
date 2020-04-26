@@ -51,10 +51,10 @@ public class UserController {
         } else return "teamId or userId is null";
     }
 
-    @RequestMapping(value = "/addUser/{userId}/room/{roomId}/team/{teamId}")
-    public String addUserToRoomById(@PathVariable(value = "roomId", required = true) Long roomId, @PathVariable(value = "userId", required = true) Long userId, @PathVariable(value = "teamId", required = true) Long teamId) {
+    @RequestMapping(value = "/addUser/{userId}/room/{roomId}")
+    public String addUserToRoomById(@PathVariable(value = "roomId", required = true) Long roomId, @PathVariable(value = "userId", required = true) Long userId) {
         if (userId != null && roomId != null) {
-            return userService.addUserToRoomById(roomId, userId, teamId);
+            return userService.addUserToRoomById(roomId, userId);
         } else return "roomId or userId is null";
     }
 }

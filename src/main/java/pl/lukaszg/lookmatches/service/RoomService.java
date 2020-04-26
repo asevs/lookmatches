@@ -7,10 +7,7 @@ import pl.lukaszg.lookmatches.model.RoomRepository;
 import pl.lukaszg.lookmatches.model.RoomStatus;
 import pl.lukaszg.lookmatches.model.User;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service("roomService")
 public class RoomService {
@@ -49,6 +46,25 @@ public class RoomService {
         room.get().setRoomStatus(RoomStatus.CLOSED);
         roomRepository.save(room.get());
         return "Room closed";
+    }
+
+    public String randomizeTeams(Long id) {
+        Optional<Room> room = roomRepository.findById(id);
+        if (room.isPresent() && !room.get().getUsers().isEmpty()) {
+            List<User> teamFirst = room.get().getUsers();
+            List<User> teamSecond = new ArrayList<>();
+            int usersListSize = room.get().getUsers().size();
+            Collections.shuffle(teamFirst, new Random(5));
+            for (int i = usersListSize / 2; i < usersListSize; i++) {
+                teamSecond.add(teamFirst.get(i));
+                teamFirst.remove(i);
+            }
+            if (!teamFirst.isEmpty() && !teamSecond.isEmpty()) {
+                teamService.addRandomizeUsersToTeams(teamFirst, room.get().getTeamFirst().getId());
+                teamService.addRandomizeUsersToTeams(teamSecond, room.get().getTeamFirst().getId());
+                return "Randomize Teams OK";
+            } else return "Teams are empty";
+        } else return "Room or users is null/empty";
     }
 
 
