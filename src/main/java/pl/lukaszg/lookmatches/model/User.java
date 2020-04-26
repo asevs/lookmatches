@@ -54,12 +54,16 @@ public class User {
     @JsonBackReference(value = "user-team")
     private Team myTeam;
 
-    @ManyToOne
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JsonBackReference(value = "users-team")
-    private Team team;
+    private List<Team> teams;
 
     @ManyToMany
     @JsonBackReference(value = "users-rooms")
     private List<Room> rooms;
+
+    @OneToMany(mappedBy = "ownerUser")
+    @JsonBackReference(value = "owner-room")
+    private List<Room> ownerRooms;
 
 }

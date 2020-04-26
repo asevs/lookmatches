@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,12 +15,12 @@ import java.util.List;
 @Table(name = "room")
 public class Room {
 
+    @Enumerated(EnumType.STRING)
+    RoomStatus roomStatus;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id")
     private long id;
-    @Enumerated(EnumType.STRING)
-    RoomStatus roomStatus;
     @Column(name = "room_price")
     private double price;
     @Column(name = "room_score_team_first")
@@ -36,7 +37,8 @@ public class Room {
     @Column(name = "slots")
     private int slots;
     @ManyToOne
-    @JsonBackReference
+    @JsonManagedReference(value = "owner-room")
+    @JsonIgnore
     private User ownerUser;
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Place.class)
     private Place place;
@@ -44,12 +46,11 @@ public class Room {
     private Team teamSecond;
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Team.class)
     private Team teamFirst;
-
-    @ManyToMany(mappedBy = "rooms")
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.ALL)
     @JsonIgnore
     @JsonManagedReference(value = "users-rooms")
     private List<User> users;
-
 
 
 //    @ElementCollection

@@ -51,20 +51,24 @@ public class RoomService {
     public String randomizeTeams(Long id) {
         Optional<Room> room = roomRepository.findById(id);
         if (room.isPresent() && !room.get().getUsers().isEmpty()) {
-            List<User> teamFirst = room.get().getUsers();
+            List<User> teamFirst = new ArrayList<>();
+            teamFirst.addAll(room.get().getUsers());
             List<User> teamSecond = new ArrayList<>();
             int usersListSize = room.get().getUsers().size();
             Collections.shuffle(teamFirst, new Random(5));
-            for (int i = usersListSize / 2; i < usersListSize; i++) {
+            for (int i = 0; i < usersListSize / 2; i++) {
                 teamSecond.add(teamFirst.get(i));
                 teamFirst.remove(i);
             }
             if (!teamFirst.isEmpty() && !teamSecond.isEmpty()) {
                 teamService.addRandomizeUsersToTeams(teamFirst, room.get().getTeamFirst().getId());
-                teamService.addRandomizeUsersToTeams(teamSecond, room.get().getTeamFirst().getId());
+                teamService.addRandomizeUsersToTeams(teamSecond, room.get().getTeamSecond().getId());
+                room.get().getUsers().clear();
+                roomRepository.save(room.get());
                 return "Randomize Teams OK";
             } else return "Teams are empty";
-        } else return "Room or users is null/empty";
+        }
+        else return "Room or users is null/empty";
     }
 
 

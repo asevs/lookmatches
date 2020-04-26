@@ -117,7 +117,10 @@ public class UserService {
 
         if (team.isPresent() && user.isPresent()) {
             if (team.get().getSlots() > team.get().getUsers().size()) {
-                user.get().setTeam(team.get());
+                List<Team> teams1 = new ArrayList<>();
+                teams1.add(team.get());
+                teams1.addAll(user.get().getTeams());
+                user.get().setTeams(teams1);
                 userRepository.save(user.get());
                 return "added user";
             } else return "max users";

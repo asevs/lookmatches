@@ -38,6 +38,7 @@ public class TeamService {
         Optional<Team> team = teamRepository.findById(id);
         if (team.isPresent()) {
             team.get().setName(name);
+            teamRepository.save(team.get());
             return "Done";
         } else return "Bad team";
     }
@@ -49,12 +50,16 @@ public class TeamService {
         team.setGoals(0);
         team.setSlots(slots);
         team.setOwner(owner);
+        team.setUsers(null);
         return teamRepository.save(team);
     }
 
     public void addRandomizeUsersToTeams(List<User> users, Long teamId) {
         Optional<Team> team = teamRepository.findById(teamId);
-        team.ifPresent(value -> value.setUsers(users));
+        if (team.isPresent()) {
+            team.get().setUsers(users);
+            teamRepository.save(team.get());
+        }
 
     }
 }

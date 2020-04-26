@@ -1,12 +1,12 @@
 package pl.lukaszg.lookmatches.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,8 +21,8 @@ public class Team {
     @Column(name = "team_name")
     @NotNull
     private String name;
-    @OneToOne(mappedBy ="myTeam")
-    @JsonManagedReference(value="user-team")
+    @OneToOne(mappedBy = "myTeam")
+    @JsonManagedReference(value = "user-team")
     private User owner;
     @Column(name = "team_goals")
     private int goals;
@@ -30,8 +30,10 @@ public class Team {
     private int assists;
     @Column(name = "team_slots")
     private int slots;
-    @OneToMany(mappedBy ="team")
-    @JsonManagedReference(value = "users-team")
+    @ToString.Exclude
+    @JsonIgnore
+    @ManyToMany(mappedBy = "teams", cascade = CascadeType.MERGE)
+    @JsonManagedReference(value = "users-team" )
     private List<User> users;
 
 }
