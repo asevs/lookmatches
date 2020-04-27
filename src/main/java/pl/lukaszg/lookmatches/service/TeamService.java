@@ -54,12 +54,4 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    public void addRandomizeUsersToTeams(List<User> users, Long teamId) {
-        Optional<Team> team = teamRepository.findById(teamId);
-        if (team.isPresent()) {
-            team.get().setUsers(users);
-            teamRepository.save(team.get());
-        }
-
-    }
 }

@@ -143,4 +143,9 @@ public class UserService {
 
         } else return "not added user";
     }
+
+    public String deleteUserById(Long id) {
+        userRepository.deleteById(id);
+        return "deleted user";
+    }
 }

@@ -1,7 +1,6 @@
 package pl.lukaszg.lookmatches.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,5 +55,10 @@ public class UserController {
         if (userId != null && roomId != null) {
             return userService.addUserToRoomById(roomId, userId);
         } else return "roomId or userId is null";
+    }
+
+    @RequestMapping(value = "/delete/{id}")
+    public void deleteById(@PathVariable(value = "id", required = true) Long id) {
+        userService.deleteUserById(id);
     }
 }

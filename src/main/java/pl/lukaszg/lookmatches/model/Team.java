@@ -32,8 +32,8 @@ public class Team {
     private int slots;
     @ToString.Exclude
     @JsonIgnore
-    @ManyToMany(mappedBy = "teams", cascade = CascadeType.MERGE)
-    @JsonManagedReference(value = "users-team" )
+    @ManyToMany(mappedBy = "teams", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "users-team")
     private List<User> users;
 
 }

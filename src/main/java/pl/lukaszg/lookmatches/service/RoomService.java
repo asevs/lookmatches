@@ -7,6 +7,7 @@ import pl.lukaszg.lookmatches.model.RoomRepository;
 import pl.lukaszg.lookmatches.model.RoomStatus;
 import pl.lukaszg.lookmatches.model.User;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service("roomService")
@@ -16,6 +17,8 @@ public class RoomService {
     RoomRepository roomRepository;
     @Autowired
     TeamService teamService;
+    @Autowired
+    UserService userService;
 
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
@@ -47,7 +50,7 @@ public class RoomService {
         roomRepository.save(room.get());
         return "Room closed";
     }
-
+    @Transactional
     public String randomizeTeams(Long id) {
         Optional<Room> room = roomRepository.findById(id);
         if (room.isPresent() && !room.get().getUsers().isEmpty()) {
@@ -61,14 +64,18 @@ public class RoomService {
                 teamFirst.remove(i);
             }
             if (!teamFirst.isEmpty() && !teamSecond.isEmpty()) {
-                teamService.addRandomizeUsersToTeams(teamFirst, room.get().getTeamFirst().getId());
-                teamService.addRandomizeUsersToTeams(teamSecond, room.get().getTeamSecond().getId());
-                room.get().getUsers().clear();
-                roomRepository.save(room.get());
+                for (int i = 0; i < teamFirst.size(); i++) {
+                    userService.addUserToTeamById(room.get().getTeamFirst().getId(), teamFirst.get(i).getId());
+                    userService.deleteUserById(teamFirst.get(i).getId());
+                }
+                for (int i = 0; i < teamSecond.size(); i++) {
+                    userService.addUserToTeamById(room.get().getTeamSecond().getId(), teamSecond.get(i).getId());
+                    userService.deleteUserById(teamSecond.get(i).getId());
+                }
+
                 return "Randomize Teams OK";
             } else return "Teams are empty";
-        }
-        else return "Room or users is null/empty";
+        } else return "Room or users is null/empty";
     }
 
 
